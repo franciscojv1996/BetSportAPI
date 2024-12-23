@@ -1,18 +1,3 @@
-Documentación de las Rutas de la API
-    Rutas de SportsController
-        Método HTTP: GET /api/sports
-        Método HTTP: GET /api/sports/soccer
-        Método HTTP: GET /api/sports/basketball
-    Rutas de CasinoController
-        Método HTTP: GET /api/casino/provider
-        Método HTTP: GET /api/casino/game/{id}
-            Parámetros de Ruta: id, Código del proveedor (por ejemplo, PRAGMATIC, HABANERO, etc.)
-
-nota
-Asegúrate de que las variables de entorno como API_KEY y AGENT_TOKEN estén correctamente configuradas en tu archivo .env.
-Las respuestas JSON están formateadas con JSON_PRETTY_PRINT para mejorar la legibilidad.
-Verifica la documentación de la API externa para asegurarte de que los parámetros y las rutas sean correctos.
-
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -79,5 +64,20 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Documentación de las Rutas de la API
+    <h3> Rutas de SportsController </h3>
+        Método HTTP: GET /api/sports
+        Método HTTP: GET /api/sports/soccer
+        Método HTTP: GET /api/sports/basketball
+    <h3> Rutas de CasinoController </h3>
+        Método HTTP: GET /api/casino/provider
+        Método HTTP: GET /api/casino/game/{id}
+            Parámetros de Ruta: id, Código del proveedor (por ejemplo, PRAGMATIC, HABANERO, etc.)
+
+<h4> nota </h4>
+Asegúrate de que las variables de entorno como API_KEY y AGENT_TOKEN estén correctamente configuradas en tu archivo .env.
+Las respuestas JSON están formateadas con JSON_PRETTY_PRINT para mejorar la legibilidad.
+Verifica la documentación de la API externa para asegurarte de que los parámetros y las rutas sean correctos.
 
 
