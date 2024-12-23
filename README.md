@@ -66,14 +66,16 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Documentación de las Rutas de la API
-    <h3> Rutas de SportsController </h3>
+    Rutas de SportsController 
         Método HTTP: GET /api/sports
         Método HTTP: GET /api/sports/soccer
         Método HTTP: GET /api/sports/basketball
-    <h3> Rutas de CasinoController </h3>
+    Rutas de CasinoController
         Método HTTP: GET /api/casino/provider
         Método HTTP: GET /api/casino/game/{id}
             Parámetros de Ruta: id, Código del proveedor (por ejemplo, PRAGMATIC, HABANERO, etc.)
+
+<h2>IP: 190.89.31.144</h2>
 
 <h4> nota </h4>
 Asegúrate de que las variables de entorno como API_KEY y AGENT_TOKEN estén correctamente configuradas en tu archivo .env.
