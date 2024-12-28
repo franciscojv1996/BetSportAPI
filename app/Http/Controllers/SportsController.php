@@ -9,90 +9,119 @@ class SportsController extends Controller
 {
     public function index()
     {
-        $basketballKeys = [];
-        $soccerKeys = [];
-        $basketballData = [];
-        $soccerKeysData = [];
+        $associations = $this->getSports();
 
-        $apiKey = "1fe9dc25095e1dcc4f7ee2c331374298";
-        $client = new Client();
-        $res = $client->get("https://api.the-odds-api.com/v4/sports/?apiKey={$apiKey}");
-        $data = json_decode($res->getBody(), true);
-
-        if ($data === null) {
-            return response()->json(['error' => 'Error al decodificar la respuesta de la API'], 500);
-        }
-
-
-        $filterData = array_filter($data, function ($sport) {
+        $filteredAssociations = array_filter($associations, function ($sport) {
             return in_array($sport['group'], ['Basketball', 'Soccer']);
         });
-        $filterData = array_values($filterData);
+        $filteredAssociations = array_values($filteredAssociations);
 
-        foreach ($data as $item) {
-            if ($item['group'] === 'Basketball') {
-                $basketballKeys[] = $item['key'];
-            } else if ($item['group'] === 'Soccer') {
-                $soccerKeys[] = $item['key'];
-            }
-        }
+        return response()->json($filteredAssociations);
+    }
 
-        foreach ($basketballKeys as $key) {
-            try {
-                $response = $client->get("https://api.the-odds-api.com/v4/sports/{$key}/odds/?apiKey={$apiKey}&regions=us&markets=h2h,spreads,totals");
-                $basketballData[] = json_decode($response->getBody(), true);
-            } catch (\Exception $e) {
-                error_log("Error fetching data for key {$key}: " . $e->getMessage());
-            }
-        }
+    public function associations()
+    {
+        $associations = $this->getSports();
 
-        foreach ($soccerKeys as $key) {
-            try {
-                $response = $client->get("https://api.the-odds-api.com/v4/sports/{$key}/odds/?apiKey={$apiKey}&regions=us&markets=h2h,spreads,totals");
-                $soccerKeysData[] = json_decode($response->getBody(), true);
-            } catch (\Exception $e) {
-                error_log("Error fetching data for key {$key}: " . $e->getMessage());
+        $basketballKeys = [];
+        $soccerKeys = [];
+
+        foreach ($associations as $sport) {
+            if ($sport['group'] === 'Basketball') {
+                $basketballKeys[] = $sport['key'];
+            } else if ($sport['group'] === 'Soccer') {
+                $soccerKeys[] = $sport['key'];
             }
         }
 
         return response()->json([
-            'basketballData' => $basketballData,
-            'soccerKeysData' => $soccerKeysData,
-            'basketballKeys' => $basketballKeys,
-            'soccerKeys' => $soccerKeys,
+            'associationsBasketballKeys' => $basketballKeys,
+            'associationsSoccerKeys' => $soccerKeys,
         ]);
     }
 
-
-
-    public function soccer()
+    public function associationsOdds(Request $request)
     {
-        $apiKey = env('API_KEY');
-        $client = new Client();
-        $res = $client->get("https://api.the-odds-api.com/v4/sports/?apiKey={$apiKey}");
-        $data = json_decode($res->getBody(), true);
+        $validated = $request->validate([
+            'sports' => 'required|string',
+            'regions' => 'required|in:us,us2,uk,au,eu',
+            'markets' => 'required|string',
+        ]);
 
-        $soccerData = $this->filterDataByGroup($data, 'soccer');
+        $sports = $validated['sports'];
+        $regions = $validated['regions'];
+        $markets = $validated['markets'];
 
-        return response()->json($soccerData);
+        $associations = $this->getOdds($sports, $regions, $markets);
+
+        return response()->json([
+            'associations' => $associations,
+            'sports'  => $sports,
+            'regions' => $regions,
+            'markets' => $markets
+        ]);
     }
 
-    public function basketball()
+    public function associationsScores(Request $request)
     {
-        $apiKey = env('API_KEY');
-        $client = new Client();
-        $res = $client->get("https://api.the-odds-api.com/v4/sports/?apiKey={$apiKey}");
-        $data = json_decode($res->getBody(), true);
+        $validated = $request->validate([
+            'sports' => 'required|string',
+            'daysFrom' => 'required|integer',
+        ]);
 
-        $basketballData = $this->filterDataByGroup($data, 'basketball');
+        $sports = $validated['sports'];
+        $daysFrom = $validated['daysFrom'];
 
-        return response()->json($basketballData);
+        $associations = $this->getScores($sports, $daysFrom);
+
+        return response()->json([
+            'associations' => $associations,
+            'sports'  => $sports,
+            'daysFrom' => $daysFrom,
+        ]);
     }
 
-    private function filterDataByGroup($data, $group)
+    public function associationsEvents(Request $request)
     {
-        return array_filter($data, function ($item) use ($group) {
-            return isset($item['group']) && strtolower($item['group']) === strtolower($group);
-        });
+        $validated = $request->validate([
+            'sports' => 'required|string',
+        ]);
+
+        $sports = $validated['sports'];
+
+        $associations = $this->getEvents($sports);
+
+        return response()->json([
+            'associations' => $associations,
+            'sports'  => $sports,
+        ]);
+    }
+
+    public function associationsOddsEvents(Request $request)
+    {
+        $validated = $request->validate([
+            'sports' => 'required|string',
+            'idEvents' => 'required|string',
+            'regions' => 'required|in:us,us2,uk,au,eu',
+            'markets' => 'required|string',
+            'oddsFormat' => 'required|in:american,decimal,fractional',
+        ]);
+
+        $sports = $validated['sports'];
+        $idEvents = $validated['idEvents'];
+        $regions = $validated['regions'];
+        $markets = $validated['markets'];
+        $oddsFormat = $validated['oddsFormat'];
+
+        $associations = $this->getEventsOdds($sports, $idEvents, $regions, $markets, $oddsFormat);
+
+        return response()->json([
+            'associations' => $associations,
+            'sports' => $sports,
+            'idEvents' => $idEvents,
+            'regions' => $regions,
+            'markets' => $markets,
+            'oddsFormat' => $oddsFormat
+        ]);
     }
 }
