@@ -22,3 +22,4 @@ Route::get('/sports/odds', [SportsController::class, 'associationsOdds']);
 Route::get('/sports/scores', [SportsController::class, 'associationsScores']); 
 Route::get('/sports/events', [SportsController::class, 'associationsEvents']);
 Route::get('/sports/oddsEvents', [SportsController::class, 'associationsOddsEvents']);
+Route::get('/sports/country', [SportsController::class, 'countryAssociations']);
